@@ -1,6 +1,7 @@
 import asyncio
 from datetime import datetime, timedelta
 
+import pytz
 from sqlalchemy import select, func
 
 
@@ -10,9 +11,11 @@ from database.postgres import postgres_client
 from services.message_service import MessageService
 
 
+YEKATERINBURG_TZ = pytz.timezone('Asia/Yekaterinburg')
+
 async def fetch_and_send_notifications():
     async for session in postgres_client.session_getter():
-        now = datetime.now()
+        now = datetime.now(YEKATERINBURG_TZ)
         current_hour = now.hour
         current_minute = now.minute
 
