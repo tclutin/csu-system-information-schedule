@@ -35,7 +35,7 @@ async def fetch_and_send_notifications():
             func.date_trunc('minute', Notification.date) == func.date_trunc('minute', now)
         )
 
-        # Execute both queries
+
         repeating_result = await session.execute(repeating_stmt)
         one_time_result = await session.execute(one_time_stmt)
 
