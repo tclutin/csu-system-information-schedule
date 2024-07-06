@@ -22,7 +22,6 @@ async def fetch_and_send_notifications():
         print(current_hour, current_minute)
         current_week_parity = 'odd' if week_number % 2 != 0 else 'even'
 
-        # Query for repeating notifications
         repeating_stmt = select(Notification).where(
             Notification.is_repeating == True,
             func.extract('hour', Notification.time) == current_hour,
@@ -31,7 +30,6 @@ async def fetch_and_send_notifications():
             (Notification.week_parity == current_week_parity) | (Notification.week_parity.is_(None))
         )
 
-        # Query for one-time notifications with a specific date
         one_time_stmt = select(Notification).where(
             Notification.is_repeating == False,
             func.date_trunc('minute', Notification.date) == func.date_trunc('minute', now)
