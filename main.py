@@ -1,6 +1,7 @@
 import asyncio
-from datetime import datetime
+from datetime import datetime, timedelta
 
+import pytz
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,13 +11,11 @@ from database.postgres import postgres_client
 from services.message_service import MessageService
 
 
-
 async def fetch_and_send_notifications():
     async for session in postgres_client.session_getter():
         now = datetime.now()
         current_hour = now.hour
         current_minute = now.minute
-
 
         current_day_of_week = now.weekday()
         week_number = now.isocalendar()[1]
@@ -50,11 +49,16 @@ async def fetch_and_send_notifications():
             await message_service.send(notification.tgchat_id, notification.message)
 
 
-
 async def main():
     while True:
+        now = datetime.now()
+        next_minute = (now + timedelta(minutes=1)).replace(second=0, microsecond=0)
+
+        sleep_seconds = (next_minute - now).total_seconds()
+        print(f"Спим {sleep_seconds} секунд до {next_minute}")
+
+        await asyncio.sleep(sleep_seconds)
         await fetch_and_send_notifications()
-        await asyncio.sleep(60)  # Wait for one minute before checking again
 
 
 if __name__ == "__main__":
