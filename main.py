@@ -1,9 +1,8 @@
 import asyncio
 from datetime import datetime, timedelta
 
-import pytz
 from sqlalchemy import select, func
-from sqlalchemy.ext.asyncio import AsyncSession
+
 
 from config.config import settings
 from database.model import Notification
